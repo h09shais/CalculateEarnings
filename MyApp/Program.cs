@@ -11,7 +11,23 @@ namespace MyApp {
     public class ConsoleSavingsCalculate {
 
         public static void Run () {
+
+            WriteLine ("Calculate this years avarage expenses and earnings. Check your savings rate");
+
+            void ExampleCalculate () {
+                WriteLine ("Example Calculation:");
+                decimal expenses = 100_704.1m;
+                decimal earnings = 246_585m;
+                var savingsCalculate = new SavingsCalculate (expenses, earnings);
+                var formatter = new SavingsCalculateFormatter(savingsCalculate, new RoundDecimals_2 ());
+                WriteLine(formatter.FormatForConsole());
+                WriteLine ("");
+            }
+
+            ExampleCalculate();
+            
             try {
+                
                 WriteLine ("What are total expenses?");
                 decimal expenses = Convert.ToDecimal (ReadLine ());
                 WriteLine ("What are total earnings?");
