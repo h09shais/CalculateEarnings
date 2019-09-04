@@ -42,13 +42,13 @@ namespace MyApp {
 
 
     public class SavingsCalculateFormatter {
-        public static IToDecimals DecimalFormat;
+        private static IToDecimals DecimalFormat;
 
-        public string Expenses = "The total expenses amounts to: ";
-        public string Earnings = "The total earnings amounts to: ";
-        public string AvgExpenses = "The avarage expenses per month amounts to: ";
-        public string AvgEarnings = "The avarage earnings per month amounts to: ";
-        public string SavingsRate = "The savings rate is estimated to: ";
+        private string Expenses = "The total expenses amounts to: ";
+        private string Earnings = "The total earnings amounts to: ";
+        private string AvgExpenses = "The avarage expenses per month amounts to: ";
+        private string AvgEarnings = "The avarage earnings per month amounts to: ";
+        private string SavingsRate = "The savings rate is estimated to: ";
 
         public SavingsCalculateFormatter(SavingsCalculate savingsCalculate, IToDecimals decimalFormat)
         {
