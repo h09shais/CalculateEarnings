@@ -17,7 +17,7 @@ namespace MyApp {
                 WriteLine ("What are total earnings?");
                 decimal earnings = Convert.ToDecimal (ReadLine ());
                 var savingsCalculate = new SavingsCalculate (expenses, earnings);
-                var formatter = new SavingsCalculateFormatter(savingsCalculate, new Round2Decimals ());
+                var formatter = new SavingsCalculateFormatter(savingsCalculate, new RoundDecimals_2 ());
                 WriteLine(formatter.FormatForConsole());
             } catch (Exception e) {
                 WriteLine (e.Message);
@@ -31,11 +31,11 @@ namespace MyApp {
         string DecimalRound (decimal value);
     }
 
-    public class Round2Decimals : IToDecimals {
+    public class RoundDecimals_2 : IToDecimals {
         public string DecimalRound (decimal value) => value.ToString ("0.00");
     }
 
-    public class Round3Decimals : IToDecimals {
+    public class RoundDecimals_3 : IToDecimals {
         public string DecimalRound (decimal value) => value.ToString ("0.000");
     }
 
