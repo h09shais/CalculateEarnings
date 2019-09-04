@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Console;
 namespace MyApp {
     class Program {
         static void Main (string[] args) {
@@ -11,14 +12,15 @@ namespace MyApp {
 
         public static void Run () {
             try {
-                System.Console.WriteLine ("What are total expenses?");
-                decimal expenses = Convert.ToDecimal (Console.ReadLine ());
-                System.Console.WriteLine ("What are total earnings?");
-                decimal earnings = Convert.ToDecimal (Console.ReadLine ());
+                WriteLine ("What are total expenses?");
+                decimal expenses = Convert.ToDecimal (ReadLine ());
+                WriteLine ("What are total earnings?");
+                decimal earnings = Convert.ToDecimal (ReadLine ());
                 var savingsCalculate = new SavingsCalculate (expenses, earnings);
-                System.Console.WriteLine (SavingsCalculateFormatter.FormatForConsole (savingsCalculate, new Round2Decimals ()));
+                var formatter = new SavingsCalculateFormatter(savingsCalculate, new Round2Decimals ());
+                WriteLine(formatter.FormatForConsole());
             } catch (Exception e) {
-                System.Console.WriteLine (e.Message);
+                WriteLine (e.Message);
                 Run ();
             }
         }
@@ -37,22 +39,44 @@ namespace MyApp {
         public string DecimalRound (decimal value) => value.ToString ("0.000");
     }
 
+
+
     public class SavingsCalculateFormatter {
-        public static IToDecimals DecimalFormatter;
+        public static IToDecimals DecimalFormat;
 
-        public static string FormatForConsole (SavingsCalculate savingsCalculate, IToDecimals decimalFormatter) {
-            DecimalFormatter = decimalFormatter;
-            var expenses = "The total expenses amounts to: " + DecimalFormatter.DecimalRound (savingsCalculate.Expenses);
-            var earnings = "The total earnings amounts to: " + DecimalFormatter.DecimalRound (savingsCalculate.Earnings);
-            var avgExpenses = "The avarage expenses per month amounts to: " + DecimalFormatter.DecimalRound (savingsCalculate.AvgExpenses ());
-            var avgEarnings = "The avarage earnings per month amounts to: " + DecimalFormatter.DecimalRound (savingsCalculate.AvgEarnings ());
-            var savingsRate = "The savings rate is estimated to: " + DecimalFormatter.DecimalRound (savingsCalculate.SavingsRate ()) + "%";
+        public string Expenses = "The total expenses amounts to: ";
+        public string Earnings = "The total earnings amounts to: ";
+        public string AvgExpenses = "The avarage expenses per month amounts to: ";
+        public string AvgEarnings = "The avarage earnings per month amounts to: ";
+        public string SavingsRate = "The savings rate is estimated to: ";
 
-            return "\n" + expenses +
-                "\n" + earnings +
-                "\n" + avgExpenses +
-                "\n" + avgEarnings +
-                "\n" + savingsRate;
+        public SavingsCalculateFormatter(SavingsCalculate savingsCalculate, IToDecimals decimalFormat)
+        {
+            DecimalFormat = decimalFormat;
+
+            Expenses += DecimalFormat.DecimalRound (savingsCalculate.Expenses);
+            Earnings += DecimalFormat.DecimalRound (savingsCalculate.Earnings);
+            AvgExpenses += DecimalFormat.DecimalRound (savingsCalculate.AvgExpenses ());
+            AvgEarnings += DecimalFormat.DecimalRound (savingsCalculate.AvgEarnings ());
+            SavingsRate +=  DecimalFormat.DecimalRound (savingsCalculate.SavingsRate ());
+        }
+
+        public string FormatForConsole () {
+
+            return "\n" + Expenses +
+                "\n" + Earnings +
+                "\n" + AvgExpenses +
+                "\n" + AvgEarnings +
+                "\n" + SavingsRate + "%";
+        }
+
+        public string FormatForHTML () {
+   
+            return "<p>" + Expenses + "</p>" +
+                "<p>" + Earnings + "</p>" + 
+                "<p>" + AvgExpenses + "</p>" + 
+                "<p>" + AvgEarnings + "</p>" + 
+                "<p>" + SavingsRate + "%" + "</p>";
         }
     }
 
