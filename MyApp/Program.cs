@@ -10,31 +10,28 @@ namespace MyApp {
 
     public class ConsoleSavingsCalculate {
 
-        public static void Run () {
+        static ConsoleSavingsCalculate() {
 
             WriteLine ("Calculate this years avarage expenses and earnings. Check your savings rate");
+            WriteLine ("Example Calculation:");
+            decimal expenses = 100_704.1m;
+            decimal earnings = 246_585m;
+            var savingsCalculate = new SavingsCalculate (expenses, earnings);
+            var formatted = SavingsCalculateFormatter.Format(savingsCalculate, new RoundDecimals_2 (), Formatters.FormatForConsole);
+            WriteLine(formatted);
+            WriteLine ("");
+        }
 
-            void ExampleCalculate () {
-                WriteLine ("Example Calculation:");
-                decimal expenses = 100_704.1m;
-                decimal earnings = 246_585m;
-                var savingsCalculate = new SavingsCalculate (expenses, earnings);
-                var formatter = new SavingsCalculateFormatter(savingsCalculate, new RoundDecimals_2 ());
-                WriteLine(formatter.FormatForConsole());
-                WriteLine ("");
-            }
-
-            ExampleCalculate();
+        public static void Run () {
             
-            try {
-                
+            try {   
                 WriteLine ("What are total expenses?");
                 decimal expenses = Convert.ToDecimal (ReadLine ());
                 WriteLine ("What are total earnings?");
                 decimal earnings = Convert.ToDecimal (ReadLine ());
                 var savingsCalculate = new SavingsCalculate (expenses, earnings);
-                var formatter = new SavingsCalculateFormatter(savingsCalculate, new RoundDecimals_2 ());
-                WriteLine(formatter.FormatForConsole());
+                var formatted = SavingsCalculateFormatter.Format(savingsCalculate, new RoundDecimals_2 (), Formatters.FormatForConsole);
+                WriteLine(formatted);
             } catch (Exception e) {
                 WriteLine (e.Message);
                 Run ();
@@ -55,45 +52,53 @@ namespace MyApp {
         public string DecimalRound (decimal value) => value.ToString ("0.000");
     }
 
+    public class SavingsCalculatePresenter 
+    {
+        public string Expenses = "The total expenses amounts to: ";
+        public string Earnings = "The total earnings amounts to: ";
+        public string AvgExpenses = "The avarage expenses per month amounts to: ";
+        public string AvgEarnings = "The avarage earnings per month amounts to: ";
+        public string SavingsRate = "The savings rate is estimated to: ";
 
+    }
+
+    public static class Formatters {
+          public static string FormatForConsole (SavingsCalculatePresenter presenter) {
+
+            return "\n" + presenter.Expenses +
+                "\n" + presenter.Earnings +
+                "\n" + presenter.AvgExpenses +
+                "\n" + presenter.AvgEarnings +
+                "\n" + presenter.SavingsRate + "%";
+        }
+
+        public static string FormatForHTML (SavingsCalculatePresenter presenter) {
+
+            return "<p>" + presenter.Expenses + "</p>" +
+                "<p>" + presenter.Earnings + "</p>" + 
+                "<p>" + presenter.AvgExpenses + "</p>" + 
+                "<p>" + presenter.AvgEarnings + "</p>" + 
+                "<p>" + presenter.SavingsRate + "%" + "</p>";
+        }
+    }
+
+    
 
     public class SavingsCalculateFormatter {
-        private static IToDecimals DecimalFormat;
 
-        private string Expenses = "The total expenses amounts to: ";
-        private string Earnings = "The total earnings amounts to: ";
-        private string AvgExpenses = "The avarage expenses per month amounts to: ";
-        private string AvgEarnings = "The avarage earnings per month amounts to: ";
-        private string SavingsRate = "The savings rate is estimated to: ";
-
-        public SavingsCalculateFormatter(SavingsCalculate savingsCalculate, IToDecimals decimalFormat)
+        public static string Format(SavingsCalculate savingsCalculate, IToDecimals decimalFormat, Func<SavingsCalculatePresenter, string> formatter)
         {
-            DecimalFormat = decimalFormat;
+            var presenter = new SavingsCalculatePresenter();
 
-            Expenses += DecimalFormat.DecimalRound (savingsCalculate.Expenses);
-            Earnings += DecimalFormat.DecimalRound (savingsCalculate.Earnings);
-            AvgExpenses += DecimalFormat.DecimalRound (savingsCalculate.AvgExpenses ());
-            AvgEarnings += DecimalFormat.DecimalRound (savingsCalculate.AvgEarnings ());
-            SavingsRate +=  DecimalFormat.DecimalRound (savingsCalculate.SavingsRate ());
+            presenter.Expenses += decimalFormat.DecimalRound (savingsCalculate.Expenses);
+            presenter.Earnings += decimalFormat.DecimalRound (savingsCalculate.Earnings);
+            presenter.AvgExpenses += decimalFormat.DecimalRound (savingsCalculate.AvgExpenses ());
+            presenter.AvgEarnings += decimalFormat.DecimalRound (savingsCalculate.AvgEarnings ());
+            presenter.SavingsRate +=  decimalFormat.DecimalRound (savingsCalculate.SavingsRate ());
+
+            return formatter(presenter);
         }
 
-        public string FormatForConsole () {
-
-            return "\n" + Expenses +
-                "\n" + Earnings +
-                "\n" + AvgExpenses +
-                "\n" + AvgEarnings +
-                "\n" + SavingsRate + "%";
-        }
-
-        public string FormatForHTML () {
-   
-            return "<p>" + Expenses + "</p>" +
-                "<p>" + Earnings + "</p>" + 
-                "<p>" + AvgExpenses + "</p>" + 
-                "<p>" + AvgEarnings + "</p>" + 
-                "<p>" + SavingsRate + "%" + "</p>";
-        }
     }
 
      public abstract class SavingsCalculateErrors {
